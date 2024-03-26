@@ -1,4 +1,4 @@
-package restwithspringbootandjavaerudio;
+package controllers;
 
 import converters.numberConverter;
 import exceptions.UnsupporteMathOperationException;
