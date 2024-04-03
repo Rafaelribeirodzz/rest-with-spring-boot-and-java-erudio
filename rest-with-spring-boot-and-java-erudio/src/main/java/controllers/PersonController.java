@@ -1,79 +1,34 @@
 package controllers;
 
-import converters.numberConverter;
-import exceptions.UnsupporteMathOperationException;
-import math.simpleMath;
+import model.Person;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import services.PersonServices;
 
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.List;
 
 @RestController
-public class MathController {
-    private final AtomicLong counter = new AtomicLong();
+@RequestMapping("/person")
+public class PersonController {
+    @Autowired
+    private PersonServices service;
 
-    private simpleMath math = new simpleMath();
-
-    @RequestMapping(value = "/sum/{numberOne}/{numberTwo}",
-            method= RequestMethod.GET)
-    public Double sum(
-            @PathVariable(value = "numberOne")String numberOne,
-            @PathVariable(value = "numberTwo")String numberTwo
-            )throws Exception{
-        if(!numberConverter.isNumeric(numberOne) || !numberConverter.isNumeric(numberTwo)) {
-            throw new UnsupporteMathOperationException("Por favor defina um valor numerico");
-        }
-        return math.sum(numberConverter.convertToDouble(numberOne), numberConverter.convertToDouble(numberTwo));
+    @RequestMapping(method= RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Person> findAll() {
+        return service.findAll();
     }
-    @RequestMapping(value = "/sub/{numberOne}/{numberTwo}",
-            method= RequestMethod.GET)
-    public Double sub(
-            @PathVariable(value = "numberOne")String numberOne,
-            @PathVariable(value = "numberTwo")String numberTwo
-    )throws Exception{
-        if(!numberConverter.isNumeric(numberOne) || !numberConverter.isNumeric(numberTwo)) {
-            throw new UnsupporteMathOperationException("Por favor defina um valor numerico");
-        }
-        return math.sub(numberConverter.convertToDouble(numberOne), numberConverter.convertToDouble(numberTwo));
+    @RequestMapping(value = "/{id}",
+            method= RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Person findById(@PathVariable(value = "id")String id){
+        return service.findById(id);
     }
-    @RequestMapping(value = "/mult/{numberOne}/{numberTwo}",
-            method= RequestMethod.GET)
-    public Double mult(
-            @PathVariable(value = "numberOne")String numberOne,
-            @PathVariable(value = "numberTwo")String numberTwo
-    )throws Exception{
-        if(!numberConverter.isNumeric(numberOne) || !numberConverter.isNumeric(numberTwo)) {
-            throw new UnsupporteMathOperationException("Por favor defina um valor numerico");
-        }
-        return math.mult(numberConverter.convertToDouble(numberOne), numberConverter.convertToDouble(numberTwo));    }
-    @RequestMapping(value = "/div/{numberOne}/{numberTwo}",
-            method= RequestMethod.GET)
-    public Double div(
-            @PathVariable(value = "numberOne")String numberOne,
-            @PathVariable(value = "numberTwo")String numberTwo
-    )throws Exception{
-        if(!numberConverter.isNumeric(numberOne) || !numberConverter.isNumeric(numberTwo)) {
-            throw new UnsupporteMathOperationException("Por favor defina um valor numerico");
-        }
-        return math.div(numberConverter.convertToDouble(numberOne), numberConverter.convertToDouble(numberTwo));    }
-    @RequestMapping(value = "/med/{numberOne}/{numberTwo}",
-            method= RequestMethod.GET)
-    public Double med(
-            @PathVariable(value = "numberOne")String numberOne,
-            @PathVariable(value = "numberTwo")String numberTwo
-    )throws Exception{
-        if(!numberConverter.isNumeric(numberOne) || !numberConverter.isNumeric(numberTwo)) {
-            throw new UnsupporteMathOperationException("Por favor defina um valor numerico");
-        }
-        return math.med(numberConverter.convertToDouble(numberOne), numberConverter.convertToDouble(numberTwo));    }
-    @RequestMapping(value = "/raiz/{number}",
-            method= RequestMethod.GET)
-    public Double raiz(
-            @PathVariable(value = "number")String number
-    )throws Exception{
-        if(!numberConverter.isNumeric(number)) {
-            throw new UnsupporteMathOperationException("Por favor defina um valor numerico");
-        }
-        return Math.sqrt(numberConverter.convertToDouble(number));
+    @RequestMapping(method= RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Person create(@RequestBody Person person){
+        return service.create(person);
     }
-
 }
